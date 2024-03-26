@@ -1,0 +1,89 @@
+<!-- <app-sidebar></app-sidebar> -->
+<!-- <app-navbar></app-navbar> -->
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col">Participant ID</th>
+			<th scope="col">Participant Name</th>
+			<th scope="col">Room Assigned</th>
+		</tr>
+	</thead>
+	<tbody>
+		@for (user of participants.data; track user.userID; let i = $index) {
+			<tr>
+				<th scope="row">{{ i + 1 }}</th>
+				<td>{{ user.userID }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.roomAssigned }}</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+
+<div class="d-flex justify-content-between p-2">
+  <ngb-pagination
+  [collectionSize]="participants.collectionSize"
+  [(page)]="participants.page"
+  [pageSize]="participants.pageSize"
+  (pageChange)="getAllParticipants()"
+></ngb-pagination>
+
+
+	<!-- <select class="form-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshCountries()">
+		<option [ngValue]="2">2 items per page</option>
+		<option [ngValue]="4">4 items per page</option>
+		<option [ngValue]="6">6 items per page</option>
+	</select> -->
+</div>
+
+
+
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Room ID</th>
+      <th scope="col">Room Name</th>
+      <!-- <th scope="col">Room Capacity</th> -->
+    </tr>
+  </thead>
+  <tbody>
+    @for (room of rooms.data; track room.roomID; let i = $index) {
+      <tr>
+        <th scope="row">{{ i + 1 }}</th>
+        <td>{{ room.roomID }}</td>
+        <td>{{ room.roomName }}</td>
+        <!-- <td>{{ room.roomCapacity }}</td> -->
+      </tr>
+    }
+  </tbody>
+</table>
+
+
+<div class="d-flex justify-content-between p-2">
+  <ngb-pagination
+  [collectionSize]="rooms.collectionSize"
+  [(page)]="rooms.page"
+  [pageSize]="rooms.pageSize"
+  (pageChange)="getAllRooms()"
+></ngb-pagination>
+
+
+	<!-- <select class="form-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshCountries()">
+		<option [ngValue]="2">2 items per page</option>
+		<option [ngValue]="4">4 items per page</option>
+		<option [ngValue]="6">6 items per page</option>
+	</select> -->
+</div>
+
+
+
+
+
+
+
+

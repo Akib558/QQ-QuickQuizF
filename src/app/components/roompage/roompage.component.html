@@ -1,0 +1,54 @@
+<div class="card">
+  <div class="card-body">
+    <b>Room ID: </b>
+    This is some text within a card body.
+  </div>
+</div>
+<div class="card">
+  <div class="card-body">
+    <b>Room Name: </b>
+    This is some text within a card body.
+  </div>
+</div>
+<div class="card">
+  <div class="card-body">
+    <b>Room Status: </b>
+    This is some text within a card body.
+  </div>
+</div>
+<div class="card">
+  <div class="card-body">
+    <b>Room StartTime: </b>
+    This is some text within a card body.
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <button
+		type="button"
+		class="btn btn-outline-primary ms-2"
+		(click)="isCollapsed = !isCollapsed"
+		[attr.aria-expanded]="!isCollapsed"
+		aria-controls="collapseExample"
+	>
+    Get Students
+	</button>
+
+  </div>
+</div>
+
+
+<div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
+	<div class="card">
+		<div class="card-body">
+      <ul class="list-group">
+        <button type="button" class="btn btn-secondary">Secondary</button>
+        <button type="button" class="btn btn-secondary">Secondary</button>
+        <button type="button" class="btn btn-secondary">Secondary</button>
+        <button type="button" class="btn btn-secondary">Secondary</button>
+      </ul>
+
+    </div>
+	</div>
+</div>

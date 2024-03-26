@@ -1,0 +1,64 @@
+<!-- <app-sidebar></app-sidebar> -->
+<!-- <app-navbar></app-navbar> -->
+
+<form [formGroup]="roomCreate">
+  <div class="mb-3">
+    <label for="dateOfBirth">Name of the Room</label>
+    <div class="input-group">
+      <input type="text" class="form-control" id="roomName" name="roomName" formControlName="roomName" required/>
+    </div>
+  </div>
+  <!-- <input type="submit" class="fadeIn fourth" value="Log In"> -->
+</form>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Participant ID</th>
+      <th scope="col">Participant Name</th>
+      <th scope="col">Room Assigned</th>
+      <th scope="col">Select</th> <!-- New column for checkboxes -->
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Iterate over participants.data -->
+    @for (user of participants.data; track user.userID; let i = $index) {
+    <tr>
+      <th scope="row">{{ i + 1 }}</th>
+      <td>{{ user.userID }}</td>
+      <td>{{ user.username }}</td>
+      <td>{{ user.roomAssigned }}</td>
+      <td>
+        <input type="checkbox" (change)="onCheckboxChange($event, user.userID)" [checked]="getStatusOfSelection(user.userID)">
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
+
+
+
+
+<div class="d-flex justify-content-between p-2">
+  <ngb-pagination
+  [collectionSize]="participants.collectionSize"
+  [(page)]="participants.page"
+  [pageSize]="participants.pageSize"
+  (pageChange)="getAllParticipants()"
+></ngb-pagination>
+
+
+
+
+<button type="button" class="btn btn-secondary" (click)="createQuiz()">Create Room</button>
+
+
+
+
+	<!-- <select class="form-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshCountries()">
+		<option [ngValue]="2">2 items per page</option>
+		<option [ngValue]="4">4 items per page</option>
+		<option [ngValue]="6">6 items per page</option>
+	</select> -->
+</div>

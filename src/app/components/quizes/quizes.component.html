@@ -1,0 +1,96 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Room ID</th>
+      <th scope="col">Room Name</th>
+      <th scope="col">Room Status</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (room of rooms.data; track room.roomID; let i = $index) {
+      <tr>
+        <th scope="row">{{ i + 1 }}</th>
+        <td>{{ room.roomID }}</td>
+        <td>{{ room.roomName }}</td>
+        <td>
+          <div class="btn-group" role="group"  aria-label="Basic radio toggle button group">
+
+
+            <input type="radio" class="btn-check" name="btnradio__{{room.roomID}}" id="btnradio1__{{room.roomID}}" autocomplete="off" [checked]="room.roomStatus === 1" (click)="startQuiz(room.roomID)">
+            <label class="btn btn-outline-success" for="btnradio1__{{room.roomID}}">Start</label>
+
+
+            <input type="radio" class="btn-check" name="btnradio__{{room.roomID}}" id="btnradio2__{{room.roomID}}" autocomplete="off" [checked]="room.roomStatus === 2" (click)="pauseQuiz(room.roomID)">
+            <label class="btn btn-outline-warning" for="btnradio2__{{room.roomID}}">Pause</label>
+
+            <input type="radio" class="btn-check" name="btnradio__{{room.roomID}}" id="btnradio3__{{room.roomID}}" autocomplete="off" [checked]="room.roomStatus === 3" (click)="endQuiz(room.roomID)">
+            <label class="btn btn-outline-secondary" for="btnradio3__{{room.roomID}}">End</label>
+          </div>
+        </td>
+        <td>
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-primary" (click)="showRoom(room.roomID)">Show</button>
+            <button type="button" class="btn btn-warning" (click)="editRoom(room.roomID)">Edit</button>
+            <button type="button" class="btn btn-danger" (click)="deleteRoom(room.roomID)">Delete</button>
+          </div>
+        </td>
+        <!-- <td>{{ room.roomCapacity }}</td> -->
+      </tr>
+    }
+  </tbody>
+</table>
+
+
+<div class="d-flex justify-content-between p-2">
+  <ngb-pagination
+  [collectionSize]="rooms.collectionSize"
+  [(page)]="rooms.page"
+  [pageSize]="rooms.pageSize"
+  (pageChange)="getAllRooms()"
+></ngb-pagination>
+
+<!-- <select class="form-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshCountries()">
+  <option [ngValue]="2">2 items per page</option>
+  <option [ngValue]="4">4 items per page</option>
+  <option [ngValue]="6">6 items per page</option>
+</select> -->
+<button class="btn btn-lg btn-outline-primary" (click)="open(content)">Add New Room</button>
+
+</div>
+
+
+<ng-template #content let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">Adding New Room</h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+	</div>
+	<div class="modal-body">
+		<form [formGroup]="quizForm" >
+			<div class="mb-3">
+				<label for="dateOfBirth">Name of the Room</label>
+				<div class="input-group">
+
+          <input type="text" class="form-control" id="roomName" name="roomName" formControlName="roomName" required/>
+        <!-- <input type="submit" class="fadeIn fourth" value="Log In"> -->
+
+					<!-- <button class="btn btn-outline-secondary bi bi-calendar3" (click)="dp.toggle()" type="button"></button> -->
+				</div>
+			</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)=gotoQuizWithParticipants() (click)="modal.close()">Create With Participants</button>
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Create</button>
+      </div>
+
+		</form>
+	</div>
+
+	<!-- <div class="modal-footer">
+		<button type="button" class="btn btn-outline-dark" (click)="gotoQuizWithParticipants()">Create With Participants</button>
+		<button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Create</button>
+
+	</div> -->
+</ng-template>
+
+
