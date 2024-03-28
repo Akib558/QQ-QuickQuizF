@@ -5,6 +5,7 @@ import { HomepageComponent } from './components/homepage/homepage.component';
 import { QuizesComponent } from './components/quizes/quizes.component';
 import { QuizwithparticipantsComponent } from './components/quizwithparticipants/quizwithparticipants.component';
 import { RoompageComponent } from './components/roompage/roompage.component';
+import { EditRoompageComponent } from './components/editroompage/editroompage.component';
 
 const routes: Routes = [
   {
@@ -32,6 +33,10 @@ const routes: Routes = [
   {
     path: 'roompage',
     component: RoompageComponent,
+  },
+  {
+    path: 'editroompage',
+    component: EditRoompageComponent,
   },
 ];
 

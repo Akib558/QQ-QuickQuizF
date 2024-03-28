@@ -35,17 +35,13 @@ export class HomepageComponent implements OnInit {
     }
     if (this.homePageService.isActive(UserID)) {
       console.log('User is active');
-      // localStorage.setItem('userID', this.UserID);
     } else {
       this.router.navigate(['/login']);
     }
     this.getAllParticipants();
     this.getAllRooms();
-    // const decodedToken: any = jwtDecode(token);
-    // var decodedJson = decodedToken; // Assign decodedToken directly
-    // console.log(decodedToken.unique_name); // Access the 'name' property of the decoded token
-    // var UserID: number = decodedToken.unique_name;
   }
+
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('userID');

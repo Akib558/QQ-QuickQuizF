@@ -56,7 +56,9 @@ export class QuizesComponent implements OnInit {
     this.router.navigate(['/roompage'], { queryParams: { roomID: roomID } });
   }
   editRoom(roomID: number) {
-    this.router.navigate(['/editroom', roomID]);
+    this.router.navigate(['/editroompage'], {
+      queryParams: { roomID: roomID },
+    });
   }
   deleteRoom(roomID: number) {
     // this.quizesService.deleteRoom(roomID).subscribe((res: any) => {

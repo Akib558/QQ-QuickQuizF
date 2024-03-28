@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoompageService } from '../../services/roompage.service';
 import { NgbCollapse, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormControl, FormGroup } from '@angular/forms';
 export class Pages {
   page: number = 1;
   pageSize: number = 4;
@@ -10,14 +11,18 @@ export class Pages {
 }
 @Component({
   selector: 'app-roompage',
-  templateUrl: './roompage.component.html',
-  styleUrl: './roompage.component.css',
+  templateUrl: './editroompage.component.html',
+  styleUrl: './editroompage.component.scss',
   // imports: [NgbCollapseModule],
 })
-export class RoompageComponent implements OnInit {
+export class EditRoompageComponent implements OnInit {
   roomId: number = 0;
-
   roomPage: any = {};
+  RoomUpdateForm = new FormGroup({
+    RoomName: new FormControl('') ?? '',
+    RoomDescription: new FormControl('') ?? '',
+    RoomID: new FormControl('') ?? '',
+  });
 
   questionInfo: Pages = new Pages();
 
@@ -34,6 +39,11 @@ export class RoompageComponent implements OnInit {
     });
     this.getRoomData();
     this.getQuestions();
+    // this.RoomUpdateForm.controls['RoomID'].setValue(this.roomId);
+    // this.RoomUpdateForm.controls['RoomName'].setValue(this.roomPage.RoomName);
+    // this.RoomUpdateForm.controls['RoomDescription'].setValue(
+    //   this.roomPage.RoomDescription
+    // );
   }
   userID = localStorage.getItem('userID');
   isCollapsed = true;
@@ -45,12 +55,29 @@ export class RoompageComponent implements OnInit {
         (res) => {
           console.log('Room Data', res);
           this.roomPage = res;
+          this.RoomUpdateForm.RoomName = this.roomPage.RoomName;
+          this.RoomUpdateForm.controls['RoomName'].setValue(
+            this.roomPage.RoomName
+          );
+          this.RoomUpdateForm.controls['RoomDescription'].setValue(
+            this.roomPage.RoomDescription
+          );
           console.log('Room Page', this.roomPage);
         },
         (err) => {
           console.log('Error', err);
         }
       );
+  }
+
+  updateRoom() {
+    console.log(this.RoomUpdateForm.value);
+    this.roomPageService
+      .updateRoom(this.RoomUpdateForm.value)
+      .subscribe((res) => {
+        console.log('Room Updated', res);
+        this.getRoomData();
+      });
   }
 
   getQuestions() {
