@@ -19,7 +19,7 @@ import { QuizwithparticipantsComponent } from './components/quizwithparticipants
 import { RoompageComponent } from './components/roompage/roompage.component';
 import { AuthInterceptorService } from './services/auth-interceptor.service';
 import { EditRoompageComponent } from './components/editroompage/editroompage.component';
-
+import { FormsModule } from '@angular/forms'; // Import FormsModule
 @NgModule({
   declarations: [
     AppComponent,
@@ -41,6 +41,7 @@ import { EditRoompageComponent } from './components/editroompage/editroompage.co
     HttpClientModule,
     ReactiveFormsModule,
     NgbCollapseModule,
+    FormsModule,
     // SidebarComponent,
   ],
   providers: [

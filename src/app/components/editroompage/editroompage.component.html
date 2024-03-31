@@ -1,16 +1,16 @@
-
 <form [formGroup]="RoomUpdateForm">
   <div class="form-group">
     <label for="roomName">Room Name</label>
-    <input type="text" class="form-control" id="roomName" formControlName="roomName">
+    <input type="text" class="form-control" id="roomName" formControlName="RoomName">
   </div>
   <div class="form-group">
     <label for="roomStatus">Room Status</label>
-    <input type="text" class="form-control" id="roomStatus" formControlName="roomStatus">
+    <input type="text" class="form-control" id="roomName" formControlName="RoomStatus">
+
   </div>
   <div class="form-group">
     <label for="startTime">Start Time</label>
-    <input type="text" class="form-control" id="startTime" formControlName="startTime">
+    <input type="text" class="form-control" id="startTime" formControlName="StartTime">
   </div>
   <button type="submit" class="btn btn-primary" (click)="updateRoom()">Update Room</button>
 </form>
@@ -46,90 +46,131 @@
 
 <div class="card">
   <div class="card-body">
-    <button
-		type="button"
-		class="btn btn-outline-primary ms-2"
-		(click)="isCollapsed = !isCollapsed"
-		[attr.aria-expanded]="!isCollapsed"
-		aria-controls="collapseExample"
-	>
-    Get Students
-	</button>
+    <button type="button" class="btn btn-outline-primary ms-2" (click)="isCollapsed = !isCollapsed"
+      [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample">
+      Get Students
+    </button>
 
   </div>
 </div>
 
 <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
-	<div class="card">
+  <div class="card">
     <div class="card-body">
-      <ul class="list-group" *ngFor="let participant of roomPage.data.participants">
-        <li class="list-group-item list-group-item-light">
-          <div class="container">
-            <div class="row">
-              <div class="col">
-                <b>Student ID: </b>
-                {{participant.userID}}
-              </div>
-              <div class="col">
-                <b>Student Name: </b>
-                {{participant.username}}
-              </div>
-              <div class="col">
-                <b>Student Email: </b>
-                {{participant.email}}
-              </div>
+      <div *ngFor="let participant of participants.data">
+        <div *ngIf="roomParticipants.includes(participant.userID)">
+          <button type="button" class="btn btn-secondary" style="width: 100%; margin: 2px;"
+            (click)="toggleParticipants(participant.userID)">
+            <div class="col">
+              <b>Student ID: </b>
+              {{participant.userID}}
             </div>
-          </div>
-        </li>
-      </ul>
+            <div class="col">
+              <b>Student Name: </b>
+              {{participant.username}}
+            </div>
+          </button>
+        </div>
+        <div *ngIf="!roomParticipants.includes(participant.userID)">
+          <button type="button" class="btn btn-outline-secondary" style="width: 100%; margin: 2px;"
+            (click)="toggleParticipants(participant.userID)">
+            <div class="col">
+              <b>Student ID: </b>
+              {{participant.userID}}
+            </div>
+            <div class="col">
+              <b>Student Name: </b>
+              {{participant.username}}
+            </div>
+          </button>
+        </div>
+
+      </div>
+
+
+      <div class="d-flex justify-content-between p-2">
+        <ngb-pagination [collectionSize]="participants.collectionSize" [(page)]="participants.page"
+          [pageSize]="participants.pageSize" (pageChange)="getAllParticipants()"></ngb-pagination>
+
+        <!-- <button type="submit" class="btn btn-primary" (click)="updateParticipants()">Update Room</button> -->
+
+        <!-- <select class="form-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshCountries()">
+		<option [ngValue]="2">2 items per page</option>
+		<option [ngValue]="4">4 items per page</option>
+		<option [ngValue]="6">6 items per page</option>
+	</select> -->
+      </div>
+
     </div>
-	</div>
+  </div>
 </div>
 <div class="card">
   <div class="card-body">
-    <button
-    type="button"
-    class="btn btn-outline-primary ms-2"
-    (click)="isCollapsed2 = !isCollapsed2"
-    [attr.aria-expanded]="!isCollapsed2"
-    aria-controls="collapseExample"
-  >
-    Get Questions
-  </button>
+    <button type="button" class="btn btn-outline-primary ms-2" (click)="isCollapsed2 = !isCollapsed2"
+      [attr.aria-expanded]="!isCollapsed2" aria-controls="collapseExample">
+      Get Questions
+    </button>
   </div>
 </div>
 <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed2">
-	<div class="card">
+  <div class="card">
     <div class="card-body">
       <table class="table table-striped">
         <thead>
-            <tr class="center">
-                <th scope="col">#</th>
-                <th scope="col">Question ID</th>
-                <th scope="col">Question</th>
-                <th scope="col">Question Options</th>
-                <th></th>
-            </tr>
+          <tr class="center">
+            <th scope="col">#</th>
+            <th scope="col">Question ID</th>
+            <th scope="col">Question</th>
+            <th scope="col">Question Options</th>
+            <th></th>
+          </tr>
         </thead>
         <tbody>
-            <!-- Loop over the data array -->
-            <tr *ngFor="let question of questionInfo.data; let i = index">
-                <th scope="row">{{ i + 1 + ((questionInfo.page - 1) * questionInfo.pageSize) }}</th>
-                <td>{{ question.questionID }}</td>
-                <td>{{ question.question }}</td>
-                <td>
-                    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                        <!-- Assuming questionStatus represents the room status -->
-                        <!-- <button type="button" class="btn btn-{{question.answer == 0 ?? "outline"}}-secondary">{{question.options[1].option}}</button> -->
+          <!-- Loop over the data array -->
+          <tr *ngFor="let question of questionInfo.data; let i = index">
+            <th scope="row">{{ i + 1 + ((questionInfo.page - 1) * questionInfo.pageSize) }}</th>
+            <td>{{ question.questionID }}</td>
+            <td>{{ question.question }}</td>
+            <td>
+              <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <!-- Assuming questionStatus represents the room status -->
+                <!-- <button type="button" class="btn btn-{{question.answer == 0 ?? "outline"}}-secondary">{{question.options[1].option}}</button> -->
 
-                        <button type="button" class="btn btn-{{question.answer !== 1 ? 'outline-' : ''}}secondary" style="width: 150px;">{{question.options[0].option}}</button>
-                        <button type="button" class="btn btn-{{question.answer !== 2 ? 'outline-' : ''}}secondary" style="width: 150px;">{{question.options[1].option}}</button>
-                        <button type="button" class="btn btn-{{question.answer !== 3 ? 'outline-' : ''}}secondary" style="width: 150px;">{{question.options[2].option}}</button>
-                        <button type="button" class="btn btn-{{question.answer !== 4 ? 'outline-' : ''}}secondary" style="width: 150px;">{{question.options[3].option}}</button>
+                <button type="button" class="btn"
+                  [ngClass]="{'btn-outline-secondary': question.answer !== 1, 'btn-secondary': question.answer === 1}"
+                  style="width: 150px;" *ngIf="question.options && question.options.length >= 1">
+                  {{question.options[0].option}}
+                </button>
+                <button type="button" class="btn"
+                  [ngClass]="{'btn-outline-secondary': question.answer !== 2, 'btn-secondary': question.answer === 2}"
+                  style="width: 150px;" *ngIf="question.options && question.options.length >= 2">
+                  {{question.options[1].option}}
+                </button>
+                <button type="button" class="btn"
+                  [ngClass]="{'btn-outline-secondary': question.answer !== 3, 'btn-secondary': question.answer === 3}"
+                  style="width: 150px;" *ngIf="question.options && question.options.length >= 3">
+                  {{question.options[2].option}}
+                </button>
+                <button type="button" class="btn"
+                  [ngClass]="{'btn-outline-secondary': question.answer !== 4, 'btn-secondary': question.answer === 4}"
+                  style="width: 150px;" *ngIf="question.options && question.options.length >= 4">
+                  {{question.options[3].option}}
+                </button>
 
 
 
-                        <!-- <input type="radio" class="btn-check" name="btnradio__{{question.questionID}}" id="btnradio1__{{question.questionID}}" autocomplete="off" [checked]="question.questionStatus === 1" >
+                <!-- <div *ngFor="let option of question.options; let i = index">
+                  <input type="text" class="form-control"
+                         [ngClass]="{'is-valid': question.answer === i + 1, 'is-invalid': question.answer !== i + 1}"
+                         style="width: 150px;" *ngIf="question.options && question.options.length >= i + 1"
+                         [(ngModel)]="question.options[i].option">
+                </div> -->
+
+
+
+
+
+                <!-- <input type="radio" class="btn-check" name="btnradio__{{question.questionID}}" id="btnradio1__{{question.questionID}}" autocomplete="off" [checked]="question.questionStatus === 1" >
                         <label class="btn btn-outline-success" for="btnradio1__{{question.questionID}}">{{ question.options[0].option }}</label>
                         <input type="radio" class="btn-check" name="btnradio__{{question.questionID}}" id="btnradio2__{{question.questionID}}" autocomplete="off" [checked]="question.questionStatus === 2" >
                         <label class="btn btn-outline-warning" for="btnradio2__{{question.questionID}}">{{ question.options[1].option }}</label>
@@ -137,28 +178,59 @@
                         <label class="btn btn-outline-secondary" for="btnradio3__{{question.questionID}}">{{ question.options[2].option }}</label>
                         <input type="radio" class="btn-check" name="btnradio__{{question.questionID}}" id="btnradio4__{{question.questionID}}" autocomplete="off" [checked]="question.questionStatus === 3" >
                         <label class="btn btn-outline-secondary" for="btnradio4__{{question.questionID}}">{{ question.options[3].option }}</label> -->
-                    </div>
-                </td>
-                <!-- <td>
+              </div>
+            </td>
+            <td>
+              <button type="button" class="btn btn-primary">Save</button>
+              <button type="button" class="btn btn-warning" (click)="open(content)">Edit</button>
+              <button type="button" class="btn btn-danger">Delete</button>
+
+            </td>
+            <!-- <td>
                     <div class="btn-group" role="group" aria-label="Basic example">
                         <button type="button" class="btn btn-primary" (click)="showquestion(question.questionID)">Show</button>
                         <button type="button" class="btn btn-warning" (click)="editquestion(question.questionID)">Edit</button>
                         <button type="button" class="btn btn-danger" (click)="deletequestion(question.questionID)">Delete</button>
                     </div>
                 </td> -->
-            </tr>
+          </tr>
         </tbody>
-    </table>
+      </table>
 
 
 
       <div class="d-flex justify-content-between p-2">
-        <ngb-pagination
-        [collectionSize]="questionInfo.collectionSize"
-        [(page)]="questionInfo.page"
-        [pageSize]="questionInfo.pageSize"
-        (pageChange)="getQuestions()"
-      ></ngb-pagination>
+        <ngb-pagination [collectionSize]="questionInfo.collectionSize" [(page)]="questionInfo.page"
+          [pageSize]="questionInfo.pageSize" (pageChange)="getQuestions()"></ngb-pagination>
+      </div>
     </div>
-	</div>
-</div>
+  </div>
+
+
+  <ng-template #content let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Adding New Room</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="quizForm" >
+        <div class="mb-3">
+          <label for="dateOfBirth">Name of the Room</label>
+          <div class="input-group">
+
+            <input type="text" class="form-control" id="roomName" name="roomName" formControlName="roomName" required/>
+          <!-- <input type="submit" class="fadeIn fourth" value="Log In"> -->
+
+            <!-- <button class="btn btn-outline-secondary bi bi-calendar3" (click)="dp.toggle()" type="button"></button> -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-dark" (click)="modal.close()">Create With Participants</button>
+          <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Create</button>
+        </div>
+
+      </form>
+    </div>
+
+  </ng-template>
+
