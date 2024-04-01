@@ -49,13 +49,40 @@ export class EditRoompageComponent implements OnInit {
   questionUpdate = {
     questionID: 0,
     question: '',
-    options: [],
+    options: [{ option: '', optionID: 0 }],
     answer: 0,
     roomID: 0,
     UserID: 0,
   };
 
+  addQuestion = {
+    question: '',
+    questionID: 0,
+    options: [] as string[],
+    answer: 0,
+    roomID: 0,
+  };
+
+  addQuestionObject = {
+    roomID: this.roomId,
+    userID: Number(localStorage.getItem('userID')),
+    Questions: [this.addQuestion],
+  };
+
+  questionOptionInputStatus: any = [];
+
   questionInfo: Pages = new Pages();
+  questionEditForm = new FormGroup({
+    questionName: new FormControl(''),
+    questionOptions: new FormControl([]),
+    // startTime: new FormControl(''),
+  });
+
+  questionAddForm = new FormGroup({
+    questionName: new FormControl(''),
+    questionOptions: new FormControl([]),
+    // startTime: new FormControl(''),
+  });
 
   constructor(
     private router: Router,
@@ -73,6 +100,10 @@ export class EditRoompageComponent implements OnInit {
     this.getAllParticipants();
     this.getRoomParticipants();
   }
+
+  private modalService = inject(NgbModal);
+  closeResult = '';
+
   userID = localStorage.getItem('userID');
   isCollapsed = true;
   isCollapsed2 = true;
@@ -94,8 +125,6 @@ export class EditRoompageComponent implements OnInit {
           this.roomData.startTime = res.data.startTime;
           this.roomData.roomTypeID = res.data.roomTypeID ?? 1;
           this.roomData.roomStatus = res.data.roomStatus;
-          // this.RoomUpdateForm.value.RoomName = res.data.roomName;
-          // console.log('Room Page', this.roomPage);
         },
         (err) => {
           console.log('Error', err);
@@ -176,16 +205,80 @@ export class EditRoompageComponent implements OnInit {
     console.log('Room Participants', this.roomParticipants);
   }
 
-  //   {
-  //     "roomID": 1,
-  //     "UserID": 1,
-  //     "Participants": [
-  //         3,
-  //         5,
-  //         1001
+  changequestionOptionInputStatus(index: number) {
+    this.questionOptionInputStatus[index] =
+      !this.questionOptionInputStatus[index];
+  }
 
-  //     ]
-  // }
+  addOption(optionvalue: HTMLInputElement) {
+    this.addQuestion.options.push(optionvalue.value);
+    console.log('Add Question', this.addQuestion);
+    optionvalue.value = '';
+  }
+
+  updateAddQuestionOption(index: number, value: string) {
+    this.addQuestion.options[index] = value;
+    console.log('Add Question', this.addQuestion);
+  }
+
+  loadAddQuestion() {}
+
+  addQuestionFunction() {
+    this.addQuestionObject.Questions.push(this.addQuestion);
+    this.addQuestion.question = this.questionAddForm.value.questionName ?? '';
+    console.log('Add Question Object', this.addQuestionObject);
+    this.roomPageService
+      .addQuestion(this.addQuestionObject)
+      .subscribe((res) => {
+        console.log('Add Question', res);
+        this.getQuestions();
+      });
+  }
+
+  loadQuestionValue(question: any) {
+    this.questionUpdate.questionID = question.questionID;
+    this.questionUpdate.question = question.question;
+    this.questionUpdate.options = question.options;
+    this.questionUpdate.answer = question.answer;
+    this.questionUpdate.roomID = question.roomID;
+    this.questionUpdate.UserID = Number(localStorage.getItem('userID'));
+
+    this.questionOptionInputStatus = new Array(
+      this.questionUpdate.options.length
+    ).fill(false);
+
+    this.questionEditForm.patchValue({
+      questionName: question.question,
+    });
+    console.log('Question Update', this.questionUpdate);
+  }
+
+  updateQuestion() {
+    this.questionUpdate.question =
+      this.questionEditForm.value.questionName ?? '';
+    console.log('Question Update', this.questionUpdate);
+    console.log('Page: ', this.questionInfo.page);
+
+    this.roomPageService.updateQuestion(this.questionUpdate).subscribe(
+      (res) => {
+        console.log('Update Question', res);
+        // console.log();
+
+        this.getQuestions();
+      },
+      (err) => {
+        console.log('Error', err);
+      }
+    );
+  }
+
+  updateOption(index: number, value: string) {
+    // console.log('Index', index);
+
+    this.questionUpdate.options[index].option = value;
+    console.log('Options', this.questionUpdate.options[index]);
+    // console.log('Question Update', this.questionUpdate);
+  }
 
   updateParticipants(id: number) {
     console.log('Room Participants', this.roomParticipants);
@@ -214,12 +307,7 @@ export class EditRoompageComponent implements OnInit {
         this.getRoomParticipants();
       });
   }
-  private modalService = inject(NgbModal);
-  closeResult = '';
 
-  quizForm = new FormGroup({
-    roomName: new FormControl(''),
-  });
   open(content: TemplateRef<any>) {
     this.modalService
       .open(content, { ariaLabelledBy: 'modal-basic-title' })

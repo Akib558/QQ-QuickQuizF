@@ -156,43 +156,14 @@
                   style="width: 150px;" *ngIf="question.options && question.options.length >= 4">
                   {{question.options[3].option}}
                 </button>
-
-
-
-                <!-- <div *ngFor="let option of question.options; let i = index">
-                  <input type="text" class="form-control"
-                         [ngClass]="{'is-valid': question.answer === i + 1, 'is-invalid': question.answer !== i + 1}"
-                         style="width: 150px;" *ngIf="question.options && question.options.length >= i + 1"
-                         [(ngModel)]="question.options[i].option">
-                </div> -->
-
-
-
-
-
-                <!-- <input type="radio" class="btn-check" name="btnradio__{{question.questionID}}" id="btnradio1__{{question.questionID}}" autocomplete="off" [checked]="question.questionStatus === 1" >
-                        <label class="btn btn-outline-success" for="btnradio1__{{question.questionID}}">{{ question.options[0].option }}</label>
-                        <input type="radio" class="btn-check" name="btnradio__{{question.questionID}}" id="btnradio2__{{question.questionID}}" autocomplete="off" [checked]="question.questionStatus === 2" >
-                        <label class="btn btn-outline-warning" for="btnradio2__{{question.questionID}}">{{ question.options[1].option }}</label>
-                        <input type="radio" class="btn-check" name="btnradio__{{question.questionID}}" id="btnradio3__{{question.questionID}}" autocomplete="off" [checked]="question.questionStatus === 3" >
-                        <label class="btn btn-outline-secondary" for="btnradio3__{{question.questionID}}">{{ question.options[2].option }}</label>
-                        <input type="radio" class="btn-check" name="btnradio__{{question.questionID}}" id="btnradio4__{{question.questionID}}" autocomplete="off" [checked]="question.questionStatus === 3" >
-                        <label class="btn btn-outline-secondary" for="btnradio4__{{question.questionID}}">{{ question.options[3].option }}</label> -->
               </div>
             </td>
             <td>
-              <button type="button" class="btn btn-primary">Save</button>
-              <button type="button" class="btn btn-warning" (click)="open(content)">Edit</button>
+              <!-- <button type="button" class="btn btn-primary">Save</button> -->
+              <button type="button" class="btn btn-warning" (click)="loadQuestionValue(question)" (click)="open(content)">Edit</button>
               <button type="button" class="btn btn-danger">Delete</button>
 
             </td>
-            <!-- <td>
-                    <div class="btn-group" role="group" aria-label="Basic example">
-                        <button type="button" class="btn btn-primary" (click)="showquestion(question.questionID)">Show</button>
-                        <button type="button" class="btn btn-warning" (click)="editquestion(question.questionID)">Edit</button>
-                        <button type="button" class="btn btn-danger" (click)="deletequestion(question.questionID)">Delete</button>
-                    </div>
-                </td> -->
           </tr>
         </tbody>
       </table>
@@ -202,6 +173,7 @@
       <div class="d-flex justify-content-between p-2">
         <ngb-pagination [collectionSize]="questionInfo.collectionSize" [(page)]="questionInfo.page"
           [pageSize]="questionInfo.pageSize" (pageChange)="getQuestions()"></ngb-pagination>
+          <button type="button" class="btn btn-primary" (click)="open(content2)">Add Question</button>
       </div>
     </div>
   </div>
@@ -209,27 +181,104 @@
 
   <ng-template #content let-modal>
     <div class="modal-header">
-      <h4 class="modal-title" id="modal-basic-title">Adding New Room</h4>
-      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+      <h4 class="modal-title" id="modal-basic-title">Update Question: {{questionUpdate.questionID}}</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')" (click)="getQuestions()"></button>
     </div>
     <div class="modal-body">
-      <form [formGroup]="quizForm" >
+      <form [formGroup]="questionEditForm">
         <div class="mb-3">
-          <label for="dateOfBirth">Name of the Room</label>
+          <label for="questionName">Name of the Room</label>
           <div class="input-group">
-
-            <input type="text" class="form-control" id="roomName" name="roomName" formControlName="roomName" required/>
-          <!-- <input type="submit" class="fadeIn fourth" value="Log In"> -->
-
-            <!-- <button class="btn btn-outline-secondary bi bi-calendar3" (click)="dp.toggle()" type="button"></button> -->
+            <input type="text" class="form-control" id="questionName" name="questionName" formControlName="questionName" required/>
           </div>
         </div>
+      </form>
+
+        <table>
+          <tr *ngFor="let option of questionUpdate.options; let i = index">
+            <td>
+              <div class="mb-3">
+                <div *ngIf="questionOptionInputStatus[i] == false">
+                  <p>
+                    Option {{i+1}}: {{option['option']}}
+                    <button type="button" class="btn btn-dark" (click)="changequestionOptionInputStatus(i)">Edit</button>
+                  </p>
+                </div>
+                <div *ngIf="questionOptionInputStatus[i] !== false">
+                  <p id="Option+{{ option['optionID'] }}">
+                    <label for="formGroupExampleInput">Option{{ i + 1 }}</label>
+                    <input type="text" class="form-control" id="formGroupExampleInput" #optionInput placeholder="Example input" value="{{ option['option'] }}">
+                    <!-- Option {{ i + 1 }}: {{ option['option'] }} -->
+                    <button type="button" class="btn btn-secondary" (click)="changequestionOptionInputStatus(i)">Cancel</button>
+                    <button type="button" class="btn btn-primary" (click)="updateOption(i,optionInput.value)" (click)="changequestionOptionInputStatus(i)">Save</button>
+                  </p>
+                </div>
+
+              </div>
+            </td>
+          </tr>
+        </table>
+
+
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-dark" (click)="modal.close()">Create With Participants</button>
-          <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Create</button>
+          <button type="button" class="btn btn-secondary" (click)="modal.close()" (click)="getQuestions()">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="modal.close('Save click')" (click)="updateQuestion()">Create</button>
         </div>
 
+    </div>
+
+  </ng-template>
+
+
+  <ng-template #content2 let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Adding New Question</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')" (click)="getQuestions()"></button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="questionAddForm">
+        <div class="mb-3">
+          <label for="questionName">Question</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="questionName" name="questionName" formControlName="addQuestionName" required/>
+          </div>
+        </div>
       </form>
+
+        <table>
+          <tr *ngFor="let option of addQuestion.options; let i = index">
+            <td>
+              <div class="mb-3">
+                <!-- <div *ngIf="questionOptionInputStatus[i] == false">
+                  <p>
+                    Option {{i+1}}: {{option['option']}}
+                    <button type="button" class="btn btn-dark" (click)="changequestionOptionInputStatus(i)">Edit</button>
+                  </p>
+                </div> -->
+                <div >
+                  <p>
+                    <label for="formGroupExampleInput">Option{{ i + 1 }}</label>
+                    <input type="text" class="form-control" id="formGroupExampleInput" #optionInput placeholder="Example input" value="{{option}}">
+                    <!-- Option {{ i + 1 }}: {{ option['option'] }} -->
+                    <button type="button" class="btn btn-secondary" (click)="changequestionOptionInputStatus(i)">Cancel</button>
+                    <button type="button" class="btn btn-primary" (click)="updateAddQuestionOption(i,optionInput.value)">Save</button>
+                  </p>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </table>
+        <div>
+          <input type="text" class="form-control" id="formGroupExampleInput" #optionInput2 placeholder="Example input">
+          <button type="button" class="btn btn-primary" (click)="addOption(optionInput2)">Add Option</button>
+        </div>
+
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="modal.close()" >Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="modal.close('Save click')" (click)="addQuestionFunction()">Create</button>
+        </div>
+
     </div>
 
   </ng-template>

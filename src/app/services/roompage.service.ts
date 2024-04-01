@@ -56,6 +56,33 @@ export class RoompageService {
     );
   }
 
+  addQuestion(data: any): Observable<any> {
+    console.log('Data', data);
+
+    return this.http.post(this.baseUrl + 'setter/room/questions/add', data, {
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token'),
+      },
+    });
+  }
+
+  updateQuestion(data: any): Observable<any> {
+    console.log('UpdatQuestion', data);
+
+    var res = this.http.put(
+      this.baseUrl + 'setter/room/questions/update',
+      data,
+      {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token'),
+        },
+      }
+    );
+    console.log(res);
+
+    return res;
+  }
+
   updateParticipants(data: any): Observable<any> {
     return this.http.post(this.baseUrl + 'setter/room/addparticipants', data, {
       headers: {
