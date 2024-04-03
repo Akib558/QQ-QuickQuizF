@@ -218,8 +218,9 @@
             </td>
           </tr>
         </table>
-
-
+        <div>
+          <input type="text" class="form-control" id="formGroupExampleInput" [(ngModel)]="updateQuestionAnswer" placeholder="Correct Answer">
+        </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="modal.close()" (click)="getQuestions()">Cancel</button>
           <button type="button" class="btn btn-primary" (click)="modal.close('Save click')" (click)="updateQuestion()">Create</button>
@@ -271,6 +272,9 @@
         <div>
           <input type="text" class="form-control" id="formGroupExampleInput" #optionInput2 placeholder="Example input">
           <button type="button" class="btn btn-primary" (click)="addOption(optionInput2)">Add Option</button>
+        </div>
+        <div>
+          <input type="text" class="form-control" id="formGroupExampleInput" [(ngModel)]="inputValue" placeholder="Correct Answer">
         </div>
 
 

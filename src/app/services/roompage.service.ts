@@ -59,7 +59,7 @@ export class RoompageService {
   addQuestion(data: any): Observable<any> {
     console.log('Data', data);
 
-    return this.http.post(this.baseUrl + 'setter/room/questions/add', data, {
+    return this.http.post(this.baseUrl + 'setter/room/addquestions', data, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token'),
       },

@@ -31,6 +31,8 @@ export class EditRoompageComponent implements OnInit {
   roomId: number = 0;
   roomPage: any = {};
   roomParticipants: any = [];
+  inputValue: string = '';
+  updateQuestionAnswer: number = 0;
   participants: Pages = new Pages();
   RoomUpdateForm = new FormGroup({
     RoomName: new FormControl('') ?? '',
@@ -79,7 +81,7 @@ export class EditRoompageComponent implements OnInit {
   });
 
   questionAddForm = new FormGroup({
-    questionName: new FormControl(''),
+    addQuestionName: new FormControl(''),
     questionOptions: new FormControl([]),
     // startTime: new FormControl(''),
   });
@@ -224,8 +226,13 @@ export class EditRoompageComponent implements OnInit {
   loadAddQuestion() {}
 
   addQuestionFunction() {
-    this.addQuestionObject.Questions.push(this.addQuestion);
-    this.addQuestion.question = this.questionAddForm.value.questionName ?? '';
+    // this.addQuestionObject.Questions.push(this.addQuestion);
+    console.log('Question: ', this.questionAddForm.value.addQuestionName);
+    this.addQuestion.answer = Number(this.inputValue);
+    this.addQuestion.question =
+      this.questionAddForm.value.addQuestionName ?? '';
+
+    this.addQuestionObject.roomID = this.roomId;
     console.log('Add Question Object', this.addQuestionObject);
     this.roomPageService
       .addQuestion(this.addQuestionObject)
@@ -240,7 +247,7 @@ export class EditRoompageComponent implements OnInit {
     this.questionUpdate.question = question.question;
     this.questionUpdate.options = question.options;
     this.questionUpdate.answer = question.answer;
-    this.questionUpdate.roomID = question.roomID;
+    this.questionUpdate.roomID = this.roomId;
     this.questionUpdate.UserID = Number(localStorage.getItem('userID'));
 
     this.questionOptionInputStatus = new Array(
@@ -258,7 +265,7 @@ export class EditRoompageComponent implements OnInit {
       this.questionEditForm.value.questionName ?? '';
     console.log('Question Update', this.questionUpdate);
     console.log('Page: ', this.questionInfo.page);
-
+    this.questionUpdate.answer = this.updateQuestionAnswer;
     this.roomPageService.updateQuestion(this.questionUpdate).subscribe(
       (res) => {
         console.log('Update Question', res);
@@ -291,6 +298,7 @@ export class EditRoompageComponent implements OnInit {
       .subscribe((res: any) => {
         console.log('Update Participants', res);
         this.getRoomParticipants();
+        this.getAllParticipants();
       });
   }
 
